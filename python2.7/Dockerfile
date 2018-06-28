@@ -3,6 +3,8 @@ FROM python:2.7.15
 ENV GDAL_VERSION=2.2.1
 ENV GDAL_VERSION_PYTHON=2.2.1
 
+RUN add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
+
 RUN apt-get update
 
 RUN apt-get -y install wget
