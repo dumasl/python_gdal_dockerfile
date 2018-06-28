@@ -23,7 +23,7 @@ RUN apt-get -y install ogdi-bin
 
 RUN apt-get -y install libogdi3.2-dev
 
-RUN apt-get -y install libjasper-runtime
+#RUN apt-get -y install libjasper-runtime
 
 RUN apt-get -y install libjasper-dev
 
