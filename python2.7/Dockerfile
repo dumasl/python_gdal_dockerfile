@@ -5,7 +5,7 @@ ENV GDAL_VERSION_PYTHON=2.2.1
 
 RUN apt-get update
 
-RUN apt-get install -y python-software-properties
+RUN apt-get install -y software-properties-common
 
 RUN add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
 
