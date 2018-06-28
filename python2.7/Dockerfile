@@ -3,22 +3,35 @@ FROM python:2.7.15
 ENV GDAL_VERSION=2.2.1
 ENV GDAL_VERSION_PYTHON=2.2.1
 
-RUN apt-get update && \
-    apt-get -y install \
-        wget \
-        libcurl4-openssl-dev \
-        build-essential \
-        libpq-dev \
-        ogdi-bin \
-        libogdi3.2-dev \
-        libjasper-runtime \
-        libjasper-dev \
-        libjasper1 \
-        libgeos-c1v5 \
-        libproj-dev \
-        libpoppler-dev \
-        libsqlite3-dev \
-        libspatialite-dev
+RUN apt-get update
+
+RUN apt-get -y install wget
+
+RUN apt-get -y install libcurl4-openssl-dev
+
+RUN apt-get -y install build-essential
+
+RUN apt-get -y install libpq-dev
+
+RUN apt-get -y install ogdi-bin
+
+RUN apt-get -y install libogdi3.2-dev
+
+RUN apt-get -y install libjasper-runtime
+
+RUN apt-get -y install libjasper-dev
+
+RUN apt-get -y install libjasper1
+
+RUN apt-get -y install libgeos-c1v5
+
+RUN apt-get -y install libproj-dev
+
+RUN apt-get -y install libpoppler-dev
+
+RUN apt-get -y install libsqlite3-dev
+
+RUN apt-get -y install libspatialite-dev
 
 RUN wget http://download.osgeo.org/gdal/$GDAL_VERSION/gdal-${GDAL_VERSION}.tar.gz -O /tmp/gdal-${GDAL_VERSION}.tar.gz && \
     tar -x -f /tmp/gdal-${GDAL_VERSION}.tar.gz -C /tmp
