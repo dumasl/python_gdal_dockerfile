@@ -9,7 +9,7 @@ ENV PYTHON_VERSION=2.7.15
 #
 RUN yum install -y epel-release*
 
-RUN yum update
+RUN yum update -y
 
 RUN yum install -y wget gcc gcc-c++ make which unzip
 
