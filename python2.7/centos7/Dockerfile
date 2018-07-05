@@ -79,6 +79,7 @@ ENV PYTHONPATH=${COTS}/python/${PYTHON_VERSION}/lib/python2.7/site-packages/:$PY
 RUN easy_install pip && pip install --upgrade pip
 RUN pip install virtualenv && \
     pip install numpy && \
-    pip install matplotlib
+    pip install matplotlib && \
+    pip install scipy
 
 #CMD ["python2"]
