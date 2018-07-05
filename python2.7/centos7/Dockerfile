@@ -80,6 +80,7 @@ RUN easy_install pip && pip install --upgrade pip
 RUN pip install virtualenv && \
     pip install numpy && \
     pip install matplotlib && \
-    pip install scipy
+    pip install scipy && \
+    pip install pyproj
 
 #CMD ["python2"]
