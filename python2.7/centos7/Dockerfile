@@ -1,20 +1,15 @@
-FROM centos:centos7
+FROM ldumas/centos7_dockerfile:centos7
 
 ENV GDAL_VERSION=2.2.1
 ENV GDAL_VERSION_PYTHON=2.2.1
 ENV PYTHON_VERSION=2.7.15
 
-# Basic steps
-#
-RUN yum install -y epel-release*
+ENV COTS=/opt/
 
-RUN yum update -y
-
-RUN yum install -y wget gcc gcc-c++ make which unzip
-
-RUN mkdir /root/COTS
-
-ENV COTS=/root/COTS
+# save initial env state
+ENV INIT_PATH=$PATH
+ENV INIT_LD_LIBRARY_PATH=$PATH
+ENV INIT_PYTHONPATH=$PYTHONPATH
 
 # python dependencies
 #
@@ -29,17 +24,20 @@ RUN yum install -y hdf-devel hdf5-devel libtiff-devel libgeotiff-devel geos-deve
 RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz -O /tmp/Python-${PYTHON_VERSION}.tar.gz && \
     tar -xzvf /tmp/Python-${PYTHON_VERSION}.tar.gz -C /tmp && \
     cd /tmp/Python-${PYTHON_VERSION} && \
-    ./configure --prefix=${COTS}/python${PYTHON_VERSION} --enable-shared --enable-loadable-sqlite-extensions --enable-unicode=ucs4 --with-ensurepip=install && \
+    ./configure --prefix=${COTS}/python${PYTHON_VERSION} --enable-shared --enable-loadable-sqlite-extensions --enable-unicode=ucs4 --with-ensurepip=install --enable-optimizations && \
     make -j "$(nproc)" && make install
-#--enable-optimizations commented for debug purpose 
 
 ENV PYTHON=${COTS}/python${PYTHON_VERSION}/bin/python
 
 # python required modules
 #
-ENV PATH=${COTS}/python${PYTHON_VERSION}/bin:$PATH
-ENV LD_LIBRARY_PATH=${COTS}/python${PYTHON_VERSION}/lib:$LD_LIBRARY_PATH
-ENV PYTHONPATH=${COTS}/python/${PYTHON_VERSION}/lib/python2.7/site-packages/:$PYTHONPATH
+ENV PY_PATH=${COTS}/python${PYTHON_VERSION}/bin
+ENV PY_LD_PATH=${COTS}/python${PYTHON_VERSION}/lib
+ENV PY_PYTHONPATH=${COTS}/python/${PYTHON_VERSION}/lib/python2.7/site-packages/
+
+ENV PATH=${PY_PATH}:$PATH
+ENV LD_LIBRARY_PATH=${PY_LD_PATH}:$LD_LIBRARY_PATH
+ENV PYTHONPATH=${PY_PYTHONPATH}:$PYTHONPATH
 
 RUN easy_install pip && pip install --upgrade pip
 RUN pip install virtualenv && \
@@ -71,9 +69,22 @@ RUN cd /tmp/gdal-${GDAL_VERSION} && \
 
 RUN rm /tmp/gdal-${GDAL_VERSION} -rf
 
-ENV PATH=${COTS}/gdal${GDAL_VERSION}/bin:$PATH
-ENV LD_LIBRARY_PATH=${COTS}/gdal${GDAL_VERSION}/lib:$LD_LIBRARY_PATH
-ENV PYTHONPATH=${COTS}/gdal${GDAL_VERSION}/lib/python2.7/site-packages/:$PYTHONPATH
+ENV PY_PATH=${COTS}/gdal${GDAL_VERSION}/bin:${PY_PATH}
+ENV PY_LD_PATH=${COTS}/gdal${GDAL_VERSION}/lib:${PY_LD_PATH}
+ENV PY_PYTHONPATH=${COTS}/gdal${GDAL_VERSION}/lib/python2.7/site-packages/:${PY_PYTHONPATH}
 
+ENV PATH=${PY_PATH}:$PATH
+ENV LD_LIBRARY_PATH=${PY_LD_PATH}:$LD_LIBRARY_PATH
+ENV PYTHONPATH=${PY_PYTHONPATH}:$PYTHONPATH
+
+
+# MIGHT BE USEFUL METHODS FOR SETTING UP ENV
+#
+RUN echo -e '#!/bin/bash\nexport PATH=${INIT_PATH} && export LD_LIBRARY_PATH=${INIT_LD_LIBRARY_PATH} && export PYTHONPATH=${INIT_PYTHONPATH}' > /usr/bin/restart_env && \
+    chmod +x /usr/bin/restart_env
+RUN echo -e '#!/bin/bash\nexport export PATH=${PY_PATH}:$PATH && export LD_LIBRARY_PATH=${PY_LD_PATH}:${LD_LIBRARY_PATH} && export PYTHONPATH=${PY_PYTHONPATH}:$PYTHONPATH' > /usr/bin/pygdal_env && \
+    chmod +x /usr/bin/pygdal_env
+
+# GDAL_DATA
 
 #CMD ["python2"]
