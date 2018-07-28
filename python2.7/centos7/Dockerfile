@@ -85,8 +85,8 @@ RUN echo -e '#!/bin/bash\nexport PATH=${INIT_PATH} && export LD_LIBRARY_PATH=${I
 RUN echo -e '#!/bin/bash\nexport export PATH=${PY_PATH}:$PATH && export LD_LIBRARY_PATH=${PY_LD_PATH}:${LD_LIBRARY_PATH} && export PYTHONPATH=${PY_PYTHONPATH}:$PYTHONPATH' > /usr/bin/pygdal_env && \
     chmod +x /usr/bin/pygdal_env
 
-RUN OPT_GDAL_DIR=${COTS}/gdal${GDAL_VERSION}
-RUN OPT_PYTHON_DIR=${COTS}/python${PYTHON_VERSION}
+ENV OPT_GDAL_DIR=${COTS}/gdal${GDAL_VERSION}
+ENV OPT_PYTHON_DIR=${COTS}/python${PYTHON_VERSION}
 
 
 #CMD ["python2"]
