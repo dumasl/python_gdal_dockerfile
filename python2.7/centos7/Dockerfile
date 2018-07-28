@@ -25,7 +25,8 @@ RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VER
     tar -xzvf /tmp/Python-${PYTHON_VERSION}.tar.gz -C /tmp && \
     cd /tmp/Python-${PYTHON_VERSION} && \
     ./configure --prefix=${COTS}/python${PYTHON_VERSION} --enable-shared --enable-loadable-sqlite-extensions --enable-unicode=ucs4 --with-ensurepip=install --enable-optimizations && \
-    make -j "$(nproc)" && make install
+    make -j "$(nproc)" && make install && \
+    rm -rf /tmp/Python-${PYTHON_VERSION}.tar.gz && rm -rf /tmp/Python-${PYTHON_VERSION}
 
 ENV PYTHON=${COTS}/python${PYTHON_VERSION}/bin/python
 
@@ -65,7 +66,8 @@ RUN cd /tmp/gdal-${GDAL_VERSION} && \
         --with-libkml \
         --with-openjpeg \
         --with-curl && \
-    make -j "$(nproc)" && make install
+    make -j "$(nproc)" && make install && \
+    rm -rf /tmp/gdal-${GDAL_VERSION}.tar.gz && rm -rf /tmp/gdal-${GDAL_VERSION}
 
 RUN rm /tmp/gdal-${GDAL_VERSION} -rf
 
@@ -89,4 +91,3 @@ ENV OPT_GDAL_DIR=${COTS}/gdal${GDAL_VERSION}
 ENV OPT_PYTHON_DIR=${COTS}/python${PYTHON_VERSION}
 
 
-#CMD ["python2"]
